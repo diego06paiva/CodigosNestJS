@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  app:
+    build: # comandos necessarios para construir a imagem
+      context: . # Local onde está o dockerfile que será gerado a imagem do projeto
+    volumes:
+      - .:/usr/src/app # Passa o caminho do diretorio para o container evitando dar build toda hora
+      - /usr/src/app/node_modules # Evita que o node_modules do host sobrescreva o do container
+    ports:
+      - '3000:3000'
+    command: npm run start:dev # Comando para iniciar em desenvolvimento
