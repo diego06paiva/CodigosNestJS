@@ -15,3 +15,4 @@ model users {
   createdAt  DateTime @default(now()) @db.Timestamp(0)
   updatedtAt DateTime @default(now()) @db.Timestamp(0)
 }
+
