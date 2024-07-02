@@ -13,13 +13,15 @@ import {
 import { CreateUserDTO } from './dto/create-user.dto'; //
 import { UpdatePutUserDTO } from './dto/update-put-user.dto';
 import { UpdatePatchUserDTO } from './dto/update-patch-user.dto';
+import { UserService } from './user.service';
 
 @Controller('users') // Define a rota base do controller
 export class UserController {
+  constructor(private readonly userService: UserService) {}
   @Post() // Decorator post que usa o método post para pegar uma solicitação do usuario
-  async create(@Body() { email, name, password }: CreateUserDTO) {
+  async create(@Body() data: CreateUserDTO) {
     // Parametros que eu peço para o usuario
-    return { email, name, password }; // O que eu quero que retorne quando ele passa os parametros pedidos
+    return this.userService.create(data); // O que eu quero que retorne quando ele passa os parametros pedidos
   }
 
   @Get() // Decorator Get que manda para o usuario
