@@ -1,0 +1,19 @@
+FROM node:20-slim 
+# Aqui estou como usuario root
+
+RUN apt update && apt install -y procps git
+# Atulializa e instala os pacotes via linux
+# procps - Para atualizar sozinho o Nest que o proprio utiliza para hot reload 
+
+
+RUN npm install -g @nestjs/cli
+# Instalação do cli do Nest automatico assim que eu subir o container
+
+USER node
+# Aqui eu entro como usuario node
+
+WORKDIR /home/node/back
+
+EXPOSE 4000
+
+CMD ["tail", "-f", "/dev/null"]

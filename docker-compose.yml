@@ -1,0 +1,24 @@
+version: '3'  # Versão do formato do Docker Compose
+
+services:
+  api-teste:  # Nome do serviço para a sua aplicação
+    build:
+      context: .docker  # Diretório onde está o Dockerfile
+      dockerfile: dockerfile  # Nome do Dockerfile a ser utilizado
+    container_name: api-teste  # Nome do container que será criado
+    volumes: 
+      - .:/home/node/back  # Mapeamento de volume entre o host e o container
+    ports:
+      - 3000:3000  # Mapeamento da porta do host para a porta do container
+
+  db-nest:
+    image: mysql:latest  # Imagem mais recente do MySQL
+    container_name: db-nest
+    restart: always
+    environment:
+      - MYSQL_DATABASE=mysql  # Nome do banco de dados a ser criado
+      - MYSQL_ROOT_PASSWORD=vasco  # Senha do usuário root do MySQL
+    ports:
+      - '3306:3306'  # Mapeamento da porta do host para a porta do container
+    volumes:
+      - .:/home/node/back  # Mapeamento do diretório atual do host para /home/node/back no container
