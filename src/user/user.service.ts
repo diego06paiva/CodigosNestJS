@@ -2,8 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaSerive } from 'src/prisma/prisma.service';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
-import { error } from 'console';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -19,6 +17,15 @@ export class UserService {
   }
 
   async show(id: number) {
+    if (
+      !(await this.prisma.users.count({
+        where: {
+          id,
+        },
+      }))
+    ) {
+      throw new NotFoundException(`O id ${id} não foi encontrado`);
+    }
     return this.prisma.users.findUnique({
       where: {
         id,
