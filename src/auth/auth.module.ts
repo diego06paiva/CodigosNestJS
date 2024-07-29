@@ -3,9 +3,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { AuthService } from './auth.service';
 
 @Module({
-  providers: [],
+  providers: [AuthService],
   imports: [
     JwtModule.register({
       secret: 'Jnw;8I&Huk-BS2<C+mqi.6kr2(d;23M',
