@@ -32,12 +32,12 @@ export class UserService {
       },
     });
   }
-  async update(id: number, data: UpdatePatchUserDto) {
+  async update(id: number, {email, name, password, role}: UpdatePatchUserDto) {
     if (!(await this.show(id))) {
       throw new NotFoundException(`O id ${id} não foi encontrado`);
     }
     return this.prisma.users.update({
-      data,
+      data: {email, name, password, role},
       where: {
         id,
       },

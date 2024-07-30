@@ -1,10 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthGuards implements CanActivate {
-  constructor(private readonly AuthService: AuthService) {}
+  constructor(
+    private readonly AuthService: AuthService, 
+    private readonly UserService: UserService) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -16,6 +19,9 @@ export class AuthGuards implements CanActivate {
       );
 
       request.tokenPayload = data;
+
+      request.user = await this.UserService.show(data.id)
+      
       return true;
     } catch (e) {
       return false;

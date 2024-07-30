@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -11,7 +12,7 @@ import { UserIdCheckMiddleware } from './middlewares/user-id-check_middleware';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule, AuthModule],
+  imports: [forwardRef(() => UserModule), forwardRef(() => AuthModule)],
   controllers: [AppController],
   providers: [AppService],
 })

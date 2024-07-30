@@ -14,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { IsEmail } from 'class-validator';
 import { AuthGuards } from 'src/guards/auth_guards';
+import { User } from 'src/decorators/users.decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -43,8 +44,7 @@ export class AuthController {
 
   @UseGuards(AuthGuards)
   @Post('me')
-  async me(@Req() req) {
-    console.log('Request Token Payload:', req.tokenPayload);
-    return { me: 'ok', data: req.tokenPayload };
+  async me(@User('email') User) {
+    return { User };
   }
 }
