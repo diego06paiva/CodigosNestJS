@@ -35,7 +35,7 @@ export class UserController {
     return this.UserService.create(data);
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Get()
   async list() {
     return this.UserService.list();
