@@ -23,13 +23,13 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { RoleGuards } from 'src/guards/role.guards';
 import { AuthGuards } from 'src/guards/auth_guards';
 
-@UseGuards(AuthGuards,RoleGuards)
+//@UseGuards(AuthGuards,RoleGuards)
 @UseInterceptors(LogInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.User)
   @Post()
   async create(@Body() data: CreateUserDto) {
     return this.UserService.create(data);

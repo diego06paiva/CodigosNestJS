@@ -10,9 +10,11 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { UserIdCheckMiddleware } from './middlewares/user-id-check_middleware';
 import { AuthModule } from './auth/auth.module';
+import { config } from 'process';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [forwardRef(() => UserModule), forwardRef(() => AuthModule)],
+  imports: [forwardRef(() => UserModule), forwardRef(() => AuthModule), ConfigModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })
