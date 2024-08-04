@@ -7,6 +7,10 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
+  UploadedFiles,
+  ParseFilePipe,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { AuthLoginDTO } from './dto/auth-login.dto';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
@@ -17,15 +21,17 @@ import { AuthService } from './auth.service';
 import { IsEmail } from 'class-validator';
 import { AuthGuards } from 'src/guards/auth_guards';
 import { User } from 'src/decorators/users.decorators';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { writeFile } from 'fs/promises';
 import path, {join} from 'path'
+import { FileService } from 'src/file/file.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly UserService: UserService,
     private readonly AuthService: AuthService,
+    private readonly FileService: FileService
   ) {}
   @Post('login')
   async login(@Body() { email, password }: AuthLoginDTO) {
@@ -56,15 +62,28 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('File'))
   @UseGuards(AuthGuards)
   @Post('photo')
-  async uploadPhoto (@User() User, @UploadedFile() photo: Express.Multer.File) {
+  async uploadPhoto (@User() User, @UploadedFile(new ParseFilePipe({
+    validators: [new FileTypeValidator({fileType: 'image/png'})]
+  })) photo: Express.Multer.File) {
+
+    const path = join(__dirname, '..', '..', 'storage', 'photo', `photo-${User.id}.png`)
+
+    try {
+      await this.FileService.upload(photo, path)
+    } catch (e){
+      throw new BadRequestException(e)
+    }
+
+    return {sucess: true}
+  }
 
 
+  @UseInterceptors(FilesInterceptor('Files'))
+  @UseGuards(AuthGuards)
+  @Post('files')
+  async uploadFiles (@User() User, @UploadedFiles() files: Express.Multer.File[]) {
 
-
-
-   const result = await writeFile(join(__dirname, '..', '..', 'storage', 'photo', `photo-${User.id}.png`), photo.buffer)
-
-
-    return {result};
+   
+    return files
   }
 }

@@ -11,6 +11,7 @@ import { Prisma, users } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import { access } from 'fs';
 import * as bcrypt from 'bcrypt'
+import { MailerService } from '@nestjs-modules/mailer/dist';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private readonly JWTservice: JwtService,
     private readonly prisma: PrismaSerive,
     private readonly UserService: UserService,
+    private readonly Mailer: MailerService
   ) {}
 
   async createToken(user: users) {
@@ -72,7 +74,7 @@ export class AuthService {
   }
 
   async forget(email: string) {
-    const user = this.prisma.users.findFirst({
+    const user = await this.prisma.users.findFirst({
       where: {
         email,
       },
@@ -81,23 +83,56 @@ export class AuthService {
       throw new UnauthorizedException('Email invalido');
     }
 
-    // TD  enviar email
+    const token = this.JWTservice.sign({
+      id: (await user).id
+    }, {
+      expiresIn: '7d',
+      subject: String((await user).id),
+      issuer: 'forget',
+      audience: 'user'
+    })
+
+    await this.Mailer.sendMail({
+      subject: "Recuperação de senha",
+      to: "Diego@gmail.com",
+      template: "forget",
+      context: {
+        name: (await user).name,
+        token
+      }
+    })
     return true;
   }
 
   async reset(password: string, token: string) {
-    // TD validar o Token...
-
-    const id = 0;
+    
+    try {
+      const data:any = this.JWTservice.verify(token, {
+        issuer: 'forget',
+        audience: 'user',
+      });
+      if(isNaN(Number(data.id))){
+        throw new BadRequestException('Token Invalido')
+      }
+      const salt = await bcrypt.genSalt()
+      password = await bcrypt.hash(password, salt)
     const user = await this.prisma.users.update({
       where: {
-        id,
+        id: Number(data.id)
       },
       data: {
         password,
       },
     });
     return this.createToken(user);
+    
+      console.log('dados recebidos', data);
+    } catch (e) {
+      console.log('token verificando erro:', e.message);
+      throw new BadRequestException(e);
+    }
+
+    
   }
   async register(data: AuthRegisterDTO) {
     const user = await this.UserService.create(data);
