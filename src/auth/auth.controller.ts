@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   Post,
-  Headers,
   UseGuards,
-  Req,
   UseInterceptors,
   UploadedFile,
   BadRequestException,
@@ -18,18 +16,15 @@ import { AuthForgetDTO } from './dto/auth.forget.dto';
 import { AuthResetDTO } from './dto/auth-reset.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
-import { IsEmail } from 'class-validator';
 import { AuthGuards } from 'src/guards/auth_guards';
 import { User } from 'src/decorators/users.decorators';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { writeFile } from 'fs/promises';
-import path, {join} from 'path'
+import {join} from 'path'
 import { FileService } from 'src/file/file.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly UserService: UserService,
     private readonly AuthService: AuthService,
     private readonly FileService: FileService
   ) {}

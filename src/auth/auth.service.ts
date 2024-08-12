@@ -1,15 +1,13 @@
 import {
   BadRequestException,
-  Body,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
 import { PrismaSerive } from 'src/prisma/prisma.service';
-import { Prisma, users } from '@prisma/client';
+import { users } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
-import { access } from 'fs';
 import * as bcrypt from 'bcrypt'
 import { MailerService } from '@nestjs-modules/mailer/dist';
 
@@ -126,7 +124,6 @@ export class AuthService {
     });
     return this.createToken(user);
     
-      console.log('dados recebidos', data);
     } catch (e) {
       console.log('token verificando erro:', e.message);
       throw new BadRequestException(e);

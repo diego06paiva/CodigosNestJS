@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { ROLES_KEY } from 'src/decorators/roles.decorators';
 import { Role } from 'src/enum/role.enum';
 
@@ -14,7 +13,6 @@ export class RoleGuards implements CanActivate {
       context.getClass(),
     ]);
 
-    // Se não houver papéis necessários, permite o acesso
     if (!requiredRoles) {
       return true;
     }

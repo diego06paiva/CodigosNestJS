@@ -14,7 +14,6 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePatchUserDto } from './dto/update-patch-user.dto';
-import { DeleteUserDto } from './dto/delete-user.dto';
 import { UserService } from './user.service';
 import { LogInterceptor } from 'src/interceptors/log.interceptor';
 import { ParamId } from 'src/decorators/param-id.decorators';
@@ -23,7 +22,7 @@ import { Roles } from 'src/decorators/roles.decorators';
 import { RoleGuards } from 'src/guards/role.guards';
 import { AuthGuards } from 'src/guards/auth_guards';
 
-//@UseGuards(AuthGuards,RoleGuards)
+@UseGuards(AuthGuards,RoleGuards)
 @UseInterceptors(LogInterceptor)
 @Controller('users')
 export class UserController {
