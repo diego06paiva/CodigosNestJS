@@ -12,6 +12,6 @@ export class AppController {
 
   @Post()
   setHello(): string {
-    return 'Hello Diego';
+    return 'Se você está vendo isso, é porque a rota correta não foi incluída. Para resolver, vá até o arquivo user.controller.ts e verifique se a rota correta está definida';
   }
 }
